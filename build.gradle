@@ -1,0 +1,60 @@
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath "io.github.kdabir.directree:directree:+"
+    }
+}
+
+
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'maven'
+
+    sourceCompatibility = 1.8 // java 8
+    targetCompatibility = 1.8
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        compile 'org.codehaus.groovy:groovy-all:2.4.12'
+        testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    }
+
+    sourceSets {
+        main.groovy.srcDirs = ['src']
+        test.groovy.srcDirs = ['test']
+
+        main.resources.srcDirs = ['resources']
+        test.resources.srcDirs = ['testResources']
+
+        test.java.srcDirs  = main.java.srcDirs = []
+    }
+
+    test {
+        testLogging {
+            events 'failed'
+            exceptionFormat 'short'
+        }
+    }
+
+}
+
+
+task createSampleModule {
+    doLast {
+        def tree = directree.DirTree.create("sampleModule") {
+            file("build.gradle") {
+                "//.keep"
+            }
+            dir("src") {
+
+            }
+            dir("test") {
+
+            }
+        }
+    }
+
+}
