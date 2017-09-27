@@ -1,1 +1,1 @@
-include 'stats', 'rtm'
+include 'stats', 'rtm', 'gh'
