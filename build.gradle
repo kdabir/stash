@@ -50,22 +50,34 @@ subprojects {
 }
 
 
-task createSampleModule {
-    doLast {
-        def tree = directree.DirTree.create("sampleModule") {
-            file("build.gradle") {
-                "//.keep"
-            }
-            file("gradle.properties") {
-                "version=0.0.1-SNAPSHOT"
-            }
-            dir("src") {
+class CreateModule extends DefaultTask {
+    // Use --name filename.
+    @org.gradle.api.internal.tasks.options.Option(
+        option = "name",
+        description = "module name",
+        order = 1)
+    String moduleName
 
-            }
-            dir("test") {
-
-            }
-        }
+    CreateModule() {
+        moduleName = 'newmodule' // default name
+        description = 'generates a new module'
     }
 
+    @OutputFile
+    File getOutputFile() {
+        return new File(project.rootDir, moduleName)
+    }
+
+    @TaskAction
+    void create() {
+        directree.DirTree.create(outputFile.absolutePath) {
+            file("build.gradle", "//.keep")
+            file("gradle.properties", "version=0.0.1-SNAPSHOT")
+            dir("src")
+            dir("test")
+        }
+    }
 }
+
+task createModule(type: CreateModule)
+
