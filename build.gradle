@@ -60,10 +60,10 @@ class CreateModule extends DefaultTask {
 
     CreateModule() {
         moduleName = 'newmodule' // default name
-        description = 'generates a new module'
+        description = 'generates a new module, overwrites if already exists'
     }
 
-    @OutputFile
+    @OutputDirectory
     File getOutputFile() {
         return new File(project.rootDir, moduleName)
     }
@@ -76,6 +76,7 @@ class CreateModule extends DefaultTask {
             dir("src")
             dir("test")
         }
+        this.project.file("settings.gradle").append("\ninclude '${moduleName}'")
     }
 }
 
