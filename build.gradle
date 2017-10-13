@@ -9,10 +9,11 @@ buildscript {
     }
 }
 
+apply plugin: 'net.researchgate.release'
+
 subprojects {
     apply plugin: 'groovy'
     apply plugin: 'maven'
-    apply plugin: 'net.researchgate.release'
 
     sourceCompatibility = 1.8 // java 8
     targetCompatibility = 1.8
@@ -43,12 +44,11 @@ subprojects {
         }
     }
 
-    release {
-        tagTemplate = '$version'
-    }
-
 }
 
+release {
+    tagTemplate = '$version'
+}
 
 class CreateModule extends DefaultTask {
     // Use --name filename.
