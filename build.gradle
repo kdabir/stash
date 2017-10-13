@@ -81,4 +81,4 @@ class CreateModule extends DefaultTask {
 }
 
 task createModule(type: CreateModule)
-
+task build
