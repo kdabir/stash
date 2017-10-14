@@ -21,6 +21,22 @@ class GitHubTest extends Specification {
         issue != null
     }
 
+    def "get starred repos"() {
+        def stars = new GitHub(owner: 'kdabir').getStarredRepos()
+
+        expect: 'default results size is 30'
+        stars.size() == 30
+    }
+
+    def "get starred repos opts work"() {
+        def fields = ['full_name', 'description', 'language', 'stargazers_count', 'forks_count','open_issues_count', 'created_at']
+        def stars = new GitHub(owner: 'kdabir').getStarredRepos(per_page:3, fields:fields)
+
+        expect: 'return limited results and fields'
+        stars.size() == 3
+        stars[1].size() <= fields.size()
+    }
+
     @Requires({ Keys.githubAccessToken })
     def "get traffic"() {
         def traffic = new GitHub(owner: 'kdabir', repo: 'glide', token: Keys.githubAccessToken).getTraffic()

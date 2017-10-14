@@ -14,6 +14,19 @@ class GitHub {
         getRepos(owner).collect { it.name }
     }
 
+    def getStarredRepos(Map requestOpts = [:], owner = this.owner) {
+        final Map defaultOpts = [per_page: 10L, page: 1]
+        final Map opts = defaultOpts + requestOpts
+
+        def json = getJson("users/${owner}/starred?page=${opts.page}&per_page=${opts.per_page}")
+
+        if (opts.fields) {
+            return json.collect { it.subMap(opts.fields) }
+        } else {
+            return json
+        }
+    }
+
     def getRepos(owner = this.owner) {
         getJson("users/${owner}/repos")
     }
