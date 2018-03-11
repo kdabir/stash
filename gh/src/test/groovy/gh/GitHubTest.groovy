@@ -24,8 +24,8 @@ class GitHubTest extends Specification {
     def "get starred repos"() {
         def stars = new GitHub(owner: 'kdabir').getStarredRepos()
 
-        expect: 'default results size is 30'
-        stars.size() == 30
+        expect: 'default results size is 10'
+        stars.size() == 10
     }
 
     def "get starred repos opts work"() {

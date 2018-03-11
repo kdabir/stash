@@ -5,15 +5,14 @@ buildscript {
     }
     dependencies {
         classpath "io.github.kdabir.directree:directree:+"
-        classpath 'net.researchgate:gradle-release:2.6.0'
+        classpath "gradle.plugin.io.github.kdabir.gradlehelpers:gradle-helpers:0.0.3"
     }
 }
 
-apply plugin: 'net.researchgate.release'
-
 subprojects {
-    apply plugin: 'groovy'
     apply plugin: 'maven'
+    apply plugin: 'groovy'
+    apply plugin: "io.github.kdabir.gradle-helpers"
 
     sourceCompatibility = 1.8 // java 8
     targetCompatibility = 1.8
@@ -22,19 +21,14 @@ subprojects {
         jcenter()
     }
 
-    dependencies {
-        compile 'org.codehaus.groovy:groovy-all:2.4.12'
-        testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-    }
+    plugins.withType(GroovyPlugin) {
 
-    sourceSets {
-        main.groovy.srcDirs = ['src']
-        test.groovy.srcDirs = ['test']
+        dependencies {
+            compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
-        main.resources.srcDirs = ['resources']
-        test.resources.srcDirs = ['testResources']
+            testCompile 'org.spockframework:spock-core:1.0-groovy-2.4', { exclude module: 'groovy-all' }
+        }
 
-        test.java.srcDirs = main.java.srcDirs = []
     }
 
     test {
@@ -44,11 +38,13 @@ subprojects {
         }
     }
 
+    task setupDirs {
+        doLast {
+            helpers.createSourceDirs()
+        }
+    }
 }
 
-release {
-    tagTemplate = '$version'
-}
 
 class CreateModule extends DefaultTask {
     // Use --name filename.
@@ -71,11 +67,10 @@ class CreateModule extends DefaultTask {
     @TaskAction
     void create() {
         directree.DirTree.create(outputFile.absolutePath) {
-            file("build.gradle", "//.keep")
+            file("${moduleName}.gradle", "//.keep")
             file("README.md", "# ${moduleName}")
             file("gradle.properties", "version=0.0.1-SNAPSHOT")
-            dir("src")
-            dir("test")
+            helpers.setupDirs()
         }
         this.project.file("settings.gradle").append("\ninclude '${moduleName}'")
     }

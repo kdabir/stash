@@ -1,4 +1,37 @@
-include 'stats'
-include 'rtm'
-include 'gh'
-include 'exec'
+new SmartRoot(rootProject).useSmartBuildFileNames().validate()
+
+/**
+ * Only root project will have build.gradle, all sub-projects will have `${sub-project}.gradle` file
+ */
+class SmartRoot {
+    List<ProjectDescriptor> projects
+
+    SmartRoot(ProjectDescriptor root) {
+        this.projects = list(root)
+    }
+
+    static List<ProjectDescriptor> list(ProjectDescriptor pd) {
+        pd.children.toList() + pd.children.collect { list(it) }.flatten()
+    }
+
+    def useSmartBuildFileNames() {
+        this.projects.each { it.buildFileName = "${it.name}.gradle"}
+        this
+    }
+
+    def validate() {
+        this.projects.each {
+            assert it.projectDir.isDirectory(), "${it.projectDir} must be a dir"
+            assert it.buildFile.isFile(), "${it.projectDir} project should contain ${it.buildFile}"
+        }
+        this
+    }
+}
+
+
+rootProject.name = 'stash'
+
+include ':stats'
+include ':rtm'
+include ':gh'
+include ':exec'
