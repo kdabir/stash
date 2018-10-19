@@ -1,3 +1,11 @@
+
+rootProject.name = 'stash'
+
+rootProject.projectDir.listFiles()
+    .findAll { (it.isDirectory() && !it.name.startsWith(".") && it.name != 'gradle') }
+    .collect { ":$it.name" }
+    .each {include it }
+
 new SmartRoot(rootProject).useSmartBuildFileNames().validate()
 
 /**
@@ -15,7 +23,7 @@ class SmartRoot {
     }
 
     def useSmartBuildFileNames() {
-        this.projects.each { it.buildFileName = "${it.name}.gradle"}
+        this.projects.each { it.buildFileName = "${it.name}.gradle" }
         this
     }
 
@@ -28,10 +36,3 @@ class SmartRoot {
     }
 }
 
-
-rootProject.name = 'stash'
-
-include ':stats'
-include ':rtm'
-include ':gh'
-include ':exec'

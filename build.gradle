@@ -1,3 +1,5 @@
+import directree.DirTree
+
 buildscript {
     repositories {
         jcenter()
@@ -11,9 +13,19 @@ buildscript {
 
 ext.groovyVersion =  "2.5.3"
 
+apply plugin: 'idea'
+
+idea {
+    module {
+        excludeDirs += [file(".gradle"), file('gradle'), file(".idea")]
+    }
+}
+
+
 subprojects {
     apply plugin: 'maven'
     apply plugin: 'groovy'
+    apply plugin: 'idea'
     apply plugin: "io.github.kdabir.gradle-helpers"
 
     sourceCompatibility = 1.8 // java 8
@@ -32,6 +44,12 @@ subprojects {
         }
 
     }
+
+    idea {
+    module {
+        excludeDirs += [file("out"), file('build')]
+    }
+}
 
     test {
         testLogging {
@@ -68,15 +86,22 @@ class CreateModule extends DefaultTask {
 
     @TaskAction
     void create() {
-        directree.DirTree.create(outputFile.absolutePath) {
-            file("${moduleName}.gradle", "//.keep")
-            file("README.md", "# ${moduleName}")
-            file("gradle.properties", "version=0.0.1-SNAPSHOT")
-            helpers.setupDirs()
+        def name = moduleName // so that its available inside following closure
+        DirTree.create(outputFile.absolutePath) {
+            file("${name}.gradle", "//.keep")
+            file("README.md", "# ${name}")
         }
-        this.project.file("settings.gradle").append("\ninclude '${moduleName}'")
+        this.project.file("settings.gradle").append("\ninclude ':${name}'")
     }
 }
 
 task createModule(type: CreateModule)
+
 task build
+
+// gradle createModule --name epoch
+// gradle epoch:setupDirs
+// find . -type d -empty -delete
+
+
+
