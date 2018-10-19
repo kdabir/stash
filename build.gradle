@@ -9,6 +9,8 @@ buildscript {
     }
 }
 
+ext.groovyVersion =  "2.5.3"
+
 subprojects {
     apply plugin: 'maven'
     apply plugin: 'groovy'
@@ -48,10 +50,10 @@ subprojects {
 
 class CreateModule extends DefaultTask {
     // Use --name filename.
-    @org.gradle.api.internal.tasks.options.Option(
+    @org.gradle.api.tasks.options.Option(
         option = "name",
-        description = "module name",
-        order = 1)
+        description = "module name"
+    )
     String moduleName
 
     CreateModule() {
