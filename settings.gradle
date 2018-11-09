@@ -3,8 +3,7 @@ rootProject.name = 'stash'
 
 rootProject.projectDir.listFiles()
     .findAll { (it.isDirectory() && !it.name.startsWith(".") && it.name != 'gradle') }
-    .collect { ":$it.name" }
-    .each {include it }
+    .each { include ":$it.name" }
 
 new SmartRoot(rootProject).useSmartBuildFileNames().validate()
 
