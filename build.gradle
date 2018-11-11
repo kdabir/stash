@@ -1,11 +1,9 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://plugins.gradle.org/m2/' }
     }
     dependencies {
         classpath "io.github.kdabir.directree:directree:+"
-        classpath "gradle.plugin.io.github.kdabir.gradlehelpers:gradle-helpers:0.0.3"
     }
 }
 
@@ -14,12 +12,13 @@ plugins {
 }
 
 
-apply plugin: 'idea'
-
 import directree.DirTree
 
 ext.groovyVersion = "2.5.3"
 
+allprojects {
+    apply plugin: 'idea'
+}
 
 idea {
     module {
@@ -106,6 +105,3 @@ task build
 // find . -type d -empty -delete
 
 
-allprojects {
-    apply plugin: 'idea'
-}
